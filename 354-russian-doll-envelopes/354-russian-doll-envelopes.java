@@ -1,36 +1,30 @@
 class Solution {
     public int maxEnvelopes(int[][] envelopes) {
-        //sort the enevelope
-        //as increasing of width, when both width is same, then sort  by decreasing order heights
-        Arrays.sort(envelopes, (a, b) ->  (a[0] == b[0]) ? (b[1] - a[1]) : (a[0] - b[0]));
+        Arrays.sort(envelopes,(a,b) -> a[0]==b[0]?b[1]-a[1]:a[0]-b[0]);
         
-        //just extarct the height
-        int[] heights = new int[envelopes.length];
-        for(int i = 0; i < heights.length; i++){
-            heights[i] = envelopes[i][1];
-        }
+        int[] dp = new int[envelopes.length];
+        int maxlen=0;
         
-        //find the longest increasing subsequen on heights
-        return getLIS(heights);
-    }
-    
-    private int getLIS(int[] nums){
-        int[] dp = new int[nums.length];
-        int len = 0;
-        
-        for(int num : nums){
-            int index = Arrays.binarySearch(dp, 0, len, num);
+        for(int i=0;i<dp.length;i++){
             
-            if(index < 0){
-                index = -(index + 1);
+            //find the index of heioght of envelope[i]
+            int index = binarySearch ( dp, 0, maxlen, envelopes[i][1]);
+            
+            dp[index] = envelopes[i][1];
+            
+            if(index == maxlen){
+                maxlen++;
             }
             
-            dp[index] = num;
-            
-            if(index == len)
-                len++;
         }
-        
-        return len;
+        return maxlen;
+    }
+    
+    int binarySearch(int[] arr , int start, int end, int target){
+        int index = Arrays.binarySearch(arr,start,end,target);
+        if(index<0){
+            index = -(index+1);
+        }
+        return index;
     }
 }
